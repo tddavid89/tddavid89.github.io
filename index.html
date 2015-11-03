@@ -2,8 +2,13 @@
 <meta charset="utf-8">
 <style>
 
+
 body {
   font: 10px sans-serif;
+}
+
+rect:hover {
+  fill: red;
 }
 
 .axis path {
@@ -21,8 +26,23 @@ body {
 }
 
 
+
+
 </style>
 <body>
+<div id="option">
+  <input name="updateButton"
+         type="button"
+         value="Change Color"
+         onclick="updateData()" />
+</div>
+
+<div id="option">
+  <input name="updateButton2"
+         type="button"
+         value="Reset Color"
+         onclick="resetData()" />
+</div>
 <script src="d3.min.js"></script>
 <script>
 
@@ -77,8 +97,58 @@ gy.selectAll("text")
 function formatCurrency(d) {
   var s = formatNumber(d / 1);
   return d === y.domain()[1]
-      ?  + s 
+      ?  + s
       : s;
+}
+
+function updateData(d) {
+
+  d3.csv('tim_data.csv',function(rows){
+
+        svg.selectAll('rect-bar')
+          .data(rows)
+          .enter()
+          .append('rect')
+          .classed('bar',true)
+          //.style("fill","steelblue")
+          .attr("fill", function(d) {
+           return "rgb(100, 700, " + (d.results * 10) + ")";
+          })
+          .attr('x',function(d,i){return i*30+20;})
+          .attr('width',20)
+          .attr('y',function(d,i){return height - d.results*11;})
+          .attr('height',function(d,i){return d.results*11;})
+          .append("title")
+          .text(function(d) {
+             return "This value is " + d.results;
+          });
+
+      });
+}
+
+function resetData(d) {
+
+  d3.csv('tim_data.csv',function(rows){
+
+        svg.selectAll('rect-bar')
+          .data(rows)
+          .enter()
+          .append('rect')
+          .classed('bar',true)
+          //.style("fill","steelblue")
+          .attr("fill", function(d) {
+           return "rgb(0, 0, " + (d.results * 10) + ")";
+          })
+          .attr('x',function(d,i){return i*30+20;})
+          .attr('width',20)
+          .attr('y',function(d,i){return height - d.results*11;})
+          .attr('height',function(d,i){return d.results*11;})
+          .append("title")
+          .text(function(d) {
+             return "This value is " + d.results;
+          });
+
+      });
 }
 
 
@@ -89,36 +159,47 @@ d3.csv('tim_data.csv',function(rows){
         .enter()
         .append('rect')
         .classed('bar',true)
-        .style("fill","steelblue")
+        //.style("fill","steelblue")
+        .attr("fill", function(d) {
+         return "rgb(0, 0, " + (d.results * 10) + ")";
+        })
         .attr('x',function(d,i){return i*30+20;})
         .attr('width',20)
         .attr('y',function(d,i){return height - d.results*11;})
-        .attr('height',function(d,i){return d.results*11;});
+        .attr('height',function(d,i){return d.results*11;})
+        .append("title")
+        .text(function(d) {
+           return "This value is " + d.results;
+        });
 
     });
 
+
+
 svg.append("text")
-        .attr("x", (width / 2))             
+        .attr("x", (width / 2))
         .attr("y", 0 - (margin.top / 2))
         .attr("text-anchor", "middle")
-        .style("font-weight", "bold")  
-        .style("font-size", "16px") 
-        .style("text-decoration", "underline")  
+        .style("font-weight", "bold")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
         .text("# of Heads Rolled Per Trial");
 
 svg.append("text")
-        .attr("x", (width / 2))             
+        .attr("x", (width / 2))
         .attr("y", (margin.bottom + height - 10))
-        .attr("text-anchor", "middle")  
-        .style("font-size", "12px") 
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
         .text("Trials");
 
 
 svg.append("text")
-        .attr("x", (0 - margin.left/2))             
+        .attr("x", (0 - margin.left/2))
         .attr("y", (0 + height/2))
-        .attr("text-anchor", "middle")  
+        .attr("text-anchor", "middle")
         .style("font-size", "12px")
         .text("# of Heads");
 
+
 </script>
+</body>
